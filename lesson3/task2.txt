@@ -1,0 +1,8 @@
+Используя сервис http://filldb.info или другой по вашему желанию, сгенерировать тестовые данные для всех таблиц, учитывая логику связей. Для всех таблиц, где это имеет смысл, создать не менее 100 строк. Загрузить тестовые данные. Приложить к отчёту полученный дамп с данными.
+
+master@Lenovo:~/mysql/lesson3$ mysqldump vk > vk_dump_empty.sql
+Дамп загружен на filldb.info.
+Сформированы данные, экспортированы (vk_dump_data.sql) и загружены в локальную БД.
+master@Lenovo:~/mysql/lesson3$ mysql vk < vk_dump_data.sql
+Выгружен дамп под именем vk_dump.sql.
+master@Lenovo:~/mysql/lesson3$ mysqldump vk > vk_dump.sql
