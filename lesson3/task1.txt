@@ -1,0 +1,16 @@
+Создать структуру БД Вконтакте по скриптам, приложенным в файле примеров examples.sql
+
+master@Lenovo:~/mysql/lesson3$ mysql -e "SOURCE vk.sql"
+master@Lenovo:~/mysql/lesson3$ mysql -e "SHOW DATABASES"
++--------------------+
+| Database           |
++--------------------+
+| example            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sample             |
+| sys                |
+| vk                 |
++--------------------+
+
