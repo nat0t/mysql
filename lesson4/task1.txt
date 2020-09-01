@@ -1,0 +1,68 @@
+Повторить все действия по доработке БД vk.
+
+SHOW TABLES;
+
+DESC users ;
+SELECT * FROM users LIMIT 10;
+UPDATE users SET updated_at = NOW() WHERE updated_at < created_at;
+
+DESC profiles;
+SELECT * FROM profiles LIMIT 10;
+UPDATE profiles SET created_at = (SELECT created_at FROM users WHERE profiles.user_id = users.id),
+					updated_at = (SELECT updated_at FROM users WHERE profiles.user_id = users.id);
+UPDATE profiles SET photo_id = FLOOR(1 + RAND() * 100);
+
+CREATE TEMPORARY TABLE countries (name VARCHAR(150));
+INSERT INTO countries VALUES ('Russian Federation'), ('Germany'), ('France'), ('USA'), ('Spain');
+UPDATE profiles SET country = (SELECT name FROM countries ORDER BY RAND() LIMIT 1);
+
+DESC messages;
+SELECT * FROM messages LIMIT 10;
+UPDATE messages SET updated_at = NOW() WHERE updated_at < created_at;
+
+DESC media_types;
+SELECT * FROM media_types;
+UPDATE media_types SET name = 'image' WHERE name = 'photo';
+INSERT INTO media_types (name) VALUES ('audio');
+
+DESC media;
+SELECT * FROM media LIMIT 10;
+ALTER TABLE media RENAME COLUMN filename to filepath;
+UPDATE media SET size = FLOOR(10000 + RAND() * 100000) WHERE size < 1000;
+UPDATE media SET metadata = CONCAT(
+	'{"owner":"',
+	(SELECT CONCAT(first_name, ' ', last_name) FROM users WHERE id = user_id),
+	'"}');
+ALTER TABLE media MODIFY COLUMN metadata JSON;
+
+CREATE TEMPORARY TABLE extensions (name VARCHAR(10));
+INSERT INTO extensions VALUES ('jpeg'), ('png'), ('avi'), ('mpeg'), ('mp3'), ('wav'), ('txt'), ('gif');
+
+UPDATE media SET filepath = CONCAT (
+	('http://'),
+	(SELECT last_name FROM users ORDER BY RAND() LIMIT 1),
+	('.org/'),
+	(SELECT first_name FROM users ORDER BY RAND() LIMIT 1),
+	('.'),
+	(SELECT name FROM extensions ORDER BY RAND() LIMIT 1)
+);
+
+DESC friendship_statuses;
+SELECT * FROM friendship_statuses;
+TRUNCATE friendship_statuses;
+INSERT INTO friendship_statuses (name) VALUES ('Requested'), ('Confirmed'), ('Rejected');
+
+DESC friendship;
+SELECT * FROM friendship LIMIT 10;
+UPDATE friendship SET user_id = FLOOR(1 + RAND() * 100),
+					  friend_id = FLOOR(1 + RAND() * 100);
+UPDATE friendship SET friend_id = friend_id + 1 WHERE user_id = friend_id;
+UPDATE friendship SET status_id = FLOOR(1 + RAND() * 3);
+
+DESC communities;
+SELECT * FROM communities;
+DELETE FROM communities WHERE id > 20;
+
+DESC communities_users;
+SELECT * FROM communities_users LIMIT 10;
+UPDATE communities_users SET community_id = FLOOR(1 + RAND() * 20);

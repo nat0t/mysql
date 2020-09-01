@@ -1,0 +1,30 @@
+(по желанию) Предложить свою реализацию лайков и постов.
+
+USE vk;
+
+-- Таблица лайков
+CREATE TABLE likes (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Идентификатор',
+  user_id INT UNSIGNED NOT NULL COMMENT 'Автор лайка',
+  object_id INT UNSIGNED NOT NULL COMMENT 'ID объекта лайка',
+  object_type_id INT UNSIGNED NOT NULL COMMENT 'ID типа объекта лайка',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Время создания лайка'
+);
+
+--Таблица типов объектов лайков
+CREATE TABLE object_types (
+  id INT UNSIGNED NOT NULL AUTO INCREMENT PRIMARY KEY COMMENT 'Идентификатор',
+  name VARCHAR(255) NOT NULL UNIQUE COMMENT 'Название типа объекта для лайка',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Время создания типа объекта'
+);
+
+--Таблица постов
+CREATE TABLE posts (
+  id INT UNSIGNED NOT NULL AUTO INCREMENT PRIMARY KEY COMMENT 'Идентификатор',
+  user_id INT UNSIGNED NOT NULL COMMENT 'Автор поста',
+  title VARCHAR(255) COMMENT 'Тема поста',
+  content TEXT NOT NULL COMMENT 'Содержание поста',
+  view_counter INT UNSIGNED DEFAULT 0 COMMENT 'Счетчик просмотров',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Время создания поста',
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Время редактирования поста'
+);
