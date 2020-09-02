@@ -1,0 +1,35 @@
+Таблица users была неудачно спроектирована. Записи created_at и updated_at были заданы типом VARCHAR и в них долгое время помещались значения в формате 20.10.2017 8:10. Необходимо преобразовать поля к типу DATETIME, сохранив введённые ранее значения.
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) COMMENT 'Имя покупателя',
+  birthday_at DATE COMMENT 'Дата рождения',
+  created_at VARCHAR(255),
+  updated_at VARCHAR(255)
+) COMMENT = 'Покупатели';
+
+INSERT INTO
+  users (name, birthday_at)
+VALUES
+  ('Иван', '1970-01-01', '20.07.2013 12:00', '20.07.2013 12:00'),
+  ('Петр', '1980-01-01', '21.07.2013 13:00', '21.07.2013 13:00'),
+  ('Сидор', '1990-01-01', '22.07.2013 14:00', '22.07.2013 14:00'),
+  ('Федот', '2000-01-01', '23.07.2013 15:00', '23.07.2013 15:00'),
+  ('Яков', '2010-01-01', '24.07.2013 16:00', '24.07.2013 16:00');
+
+UPDATE
+  users
+SET
+  created_at = STR_TO_DATE(created_at, '%d.%m.%Y %k:%i');
+  updated_at = STR_TO_DATE(updated_at, '%d.%m.%Y %k:%i');
+
+ALTER TABLE
+  users
+CHANGE
+  created_at created_at DATETIME DEFAULT CURRENT)TIMESTAMP;
+
+ALTER TABLE
+  users
+CHANGE
+  updated_at updated_at DATETIME DEFAULT CURRENT)TIMESTAMP;
