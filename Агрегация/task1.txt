@@ -1,0 +1,24 @@
+Подсчитайте средний возраст пользователей в таблице users.
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) COMMENT 'Имя покупателя',
+  birthday_at DATE COMMENT 'Дата рождения',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) COMMENT = 'Покупатели';
+
+INSERT INTO
+  users (name, birthday_at)
+VALUES
+  ('Иван', '1970-01-01'),
+  ('Петр', '1980-01-01'),
+  ('Сидор', '1990-01-01'),
+  ('Федот', '2000-01-01'),
+  ('Яков', '2010-01-01');
+
+SELECT
+  AVG(TIMESTAMPDIFF(YEAR, birthday_at, NOW())) AS age
+FROM
+  users;
