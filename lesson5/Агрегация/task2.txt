@@ -1,0 +1,29 @@
+Подсчитайте количество дней рождения, которые приходятся на каждый из дней недели. Следует учесть, что необходимы дни недели текущего года, а не года рождения.
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) COMMENT 'Имя покупателя',
+  birthday_at DATE COMMENT 'Дата рождения',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) COMMENT = 'Покупатели';
+
+INSERT INTO
+  users (name, birthday_at)
+VALUES
+  ('Иван', '1970-01-01'),
+  ('Петр', '1980-01-01'),
+  ('Сидор', '1990-01-01'),
+  ('Федот', '2000-01-01'),
+  ('Яков', '2010-01-01');
+
+SELECT
+  DATE_FORMAT(DATE(CONCAT_WS('-', YEAR(NOW()), MONTH(birthday_at), DAY(birthday_at))), '%W') AS day,
+  COUNT(*) AS total
+FROM
+  users
+GROUP BY
+  day
+ORDER BY
+  total;
