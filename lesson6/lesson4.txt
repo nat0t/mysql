@@ -1,0 +1,19 @@
+Подсчитать общее количество лайков десяти самым молодым пользователям (сколько лайков получили 10 самых молодых пользователей).
+
+SELECT
+  target_id,
+  TIMESTAMPDIFF(
+    YEAR,
+    (SELECT birthday FROM profiles WHERE user_id = likes.target_id),
+    NOW()) as age,
+  COUNT(
+  TIMESTAMPDIFF(
+    YEAR,
+    (SELECT birthday FROM profiles WHERE user_id = likes.target_id),
+    NOW())) AS total
+FROM likes
+GROUP BY target_id
+ORDER BY age
+LIMIT 10;
+
+Не смог доработать запрос таким образом, чтобы выводилась непосредственно сумма пользователей. Так что пришлось считать напрямую - 15.
