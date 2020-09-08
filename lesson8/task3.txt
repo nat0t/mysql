@@ -1,0 +1,14 @@
+Найти 10 пользователей, которые проявляют наименьшую активность в использовании социальной сети (критерии активности необходимо определить самостоятельно).
+
+Активность пользователя в соцсети можно определить как сумму написанных сообщений, загруженного медиаконтента и поставленных лайков.
+SELECT CONCAT(first_name, ' ', last_name), COUNT(likes.user_id)+COUNT(media.user_id)+COUNT(messages.from_user_id) AS activity
+FROM users
+  LEFT JOIN likes
+  ON likes.user_id = users.id
+  LEFT JOIN media
+  ON media.user_id = users.id
+  LEFT JOIN messages
+  ON messages.from_user_id = users.id
+GROUP BY users.id
+ORDER BY activity
+LIMIT 10;
