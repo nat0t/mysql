@@ -1,0 +1,12 @@
+Подсчитать общее количество лайков десяти самым молодым пользователям (сколько лайков получили 10 самых молодых пользователей).
+
+SELECT SUM(total_likes) AS sum_likes FROM
+  (SELECT COUNT(likes.target_id) AS total_likes
+  FROM profiles
+    LEFT JOIN likes
+    ON likes.target_id = profiles.user_id AND likes.target_type_id = 2
+  GROUP BY profiles.birthday
+  ORDER BY profiles.birthday
+  DESC LIMIT 10) AS total_likes;
+
+Не догадался как посчитать сумму лайков без использования внешнего запроса. Это возможно?

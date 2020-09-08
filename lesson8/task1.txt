@@ -1,0 +1,32 @@
+Определить кто больше поставил лайков (всего) - мужчины или женщины?
+
+SELECT CASE
+  WHEN
+    (SELECT COUNT(profiles.gender)
+    FROM profiles
+      JOIN likes
+      ON profiles.user_id = likes.user_id
+    WHERE profiles.gender = 'f') >
+    (SELECT COUNT(profiles.gender)
+    FROM profiles
+      JOIN likes
+      ON profiles.user_id = likes.user_id
+    WHERE profiles.gender = 'm')
+  THEN
+    'Женщин, поставивших лайки, больше, чем мужчин.'
+  WHEN
+    (SELECT COUNT(profiles.gender)
+    FROM profiles
+      JOIN likes
+      ON profiles.user_id = likes.user_id
+    WHERE profiles.gender = 'f') <
+    (SELECT COUNT(profiles.gender)
+    FROM profiles
+      JOIN likes
+      ON profiles.user_id = likes.user_id
+    WHERE profiles.gender = 'm')
+  THEN
+    'Мужчин, поставивших лайки, больше, чем женщин.'
+  ELSE
+    'Лайки поставили одинаковое количество мужчин и женщин.'
+END;
