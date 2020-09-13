@@ -1,0 +1,48 @@
+(по желанию) Пусть имеется таблица с календарным полем created_at. В ней размещены разряженые календарные записи за август 2018 года '2018-08-01', '2016-08-04', '2018-08-16' и 2018-08-17. Составьте запрос, который выводит полный список дат за август, выставляя в соседнем поле значение 1, если дата присутствует в исходном таблице и 0, если она отсутствует.
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) COMMENT 'Имя покупателя',
+  birthday_at DATE COMMENT 'Дата рождения',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) COMMENT = 'Покупатели';
+
+INSERT INTO users (name, birthday_at, created_at) VALUES
+  ('Геннадий', '1990-10-05', '2018-08-01'),
+  ('Наталья', '1984-11-12', '2016-08-01'),
+  ('Александр', '1985-05-20', '2018-08-16'),
+  ('Сергей', '1988-02-14', '2018-08-17');
+
+CREATE VIEW digits AS
+  SELECT 0 AS digit UNION ALL
+  SELECT 1 UNION ALL
+  SELECT 2 UNION ALL
+  SELECT 3 UNION ALL
+  SELECT 4 UNION ALL
+  SELECT 5 UNION ALL
+  SELECT 6 UNION ALL
+  SELECT 7 UNION ALL
+  SELECT 8 UNION ALL
+  SELECT 9;
+ 
+CREATE VIEW numbers AS
+  SELECT
+    ones.digit + tens.digit * 10 + hundreds.digit * 100 + thousands.digit * 1000 AS number
+  FROM
+    digits AS ones,
+    digits AS tens,
+    digits AS hundreds,
+    digits AS thousands;
+   
+CREATE VIEW dates AS
+  SELECT
+    SUBDATE(CURRENT_DATE(), number) AS date
+  FROM
+    numbers;
+
+SELECT date, (SELECT EXISTS(SELECT * FROM users WHERE created_at = date))
+FROM dates
+WHERE date BETWEEN '2018-07-31' AND '2018-08-31'
+ORDER BY date;

@@ -1,0 +1,28 @@
+(по желанию) Пусть имеется любая таблица с календарным полем created_at. Создайте запрос, который удаляет устаревшие записи из таблицы, оставляя только 5 самых свежих записей.
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) COMMENT 'Имя покупателя',
+  birthday_at DATE COMMENT 'Дата рождения',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) COMMENT = 'Покупатели';
+
+INSERT INTO users (name, birthday_at, created_at) VALUES
+  ('Геннадий', '1990-10-05', '2018-08-01'),
+  ('Наталья', '1984-11-12', '2016-08-01'),
+  ('Александр', '1985-05-20', '2018-08-16'),
+  ('Сергей', '1988-02-14', '2018-08-17'),
+  ('Иван', '1998-01-12', '2013-01-01'),
+  ('Мария', '1992-08-29', '2020-01-01');
+
+DELETE
+FROM users
+WHERE created_at < ALL(
+  SELECT * FROM( 
+    SELECT created_at
+    FROM users
+    ORDER BY created_at DESC LIMIT 5) temp);
+
+Запись 'Иван' удалена.
