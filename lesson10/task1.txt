@@ -1,0 +1,22 @@
+Проанализировать какие запросы могут выполняться наиболее часто в процессе работы приложения и добавить необходимые индексы.
+
+Мне сложно судить насколько часты те или иные запросы к базам соц. сетей, поскольку я ими не пользуюсь. Однако, опросив знакомых, я пришёл к следующим выводам:
+- нередко ищут человека по имени и фамилии, иногда "пробивают" номер телефона или адрес электронной почты;
+- ищут по дате рождения, городу или фотографии;
+- могут искать интересное сообщество по названию (спорно);
+- просматривают альбомы человека, то есть в запросе проверяется принадлежность медиафайла пользователю;
+- открывают переписку с человеком;
+- ищутся посты пользователя, если это популярная личность; также иногда ищутся посты по теме.
+
+Исходя из этого, посчитал нужным ввести следующие индексы:
+CREATE INDEX users_first_name_last_name_idx ON users(first_name, last_name);
+CREATE INDEX users_phone_idx ON users(phone);
+CREATE UNIQUE INDEX users_email_idx ON users(email);
+CREATE INDEX profiles_birthday_idx ON profiles(birthday);
+CREATE INDEX profiles_city_idx ON profiles(city);
+CREATE INDEX profiles_photo_id_idx ON profiles(photo_id);
+CREATE INDEX communities_name_idx ON communities(name);
+CREATE INDEX media_user_id_idx ON media(user_id);
+CREATE INDEX messages_from_user_id_to_user_id_idx ON messages(from_user_id, to_user_id);
+CREATE INDEX posts_user_id_idx ON posts(user_id);
+CREATE INDEX posts_head_idx ON posts(head);

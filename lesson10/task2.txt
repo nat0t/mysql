@@ -1,0 +1,23 @@
+Задание на оконные функции. Построить запрос, который будет выводить следующие столбцы:
+- имя группы;
+- среднее количество пользователей в группах;
+- самый молодой пользователь в группе;
+- самый старший пользователь в группе;
+- общее количество пользователей в группе;
+- всего пользователей в системе;
+- отношение в процентах (общее количество пользователей в группе / всего пользователей в системе) * 100;
+
+SELECT DISTINCT communities.name,
+  AVG(communities_users.user_id) OVER() AS "avg users",
+  MAX(profiles.birthday) OVER(PARTITION BY communities.id) AS yangest,
+  MIN(profiles.birthday) OVER(PARTITION BY communities.id) AS oldest,
+  COUNT(communities_users.user_id) OVER(PARTITION BY communities_users.community_id) AS "users in community",
+  COUNT(users.id) OVER() AS "total users",
+  COUNT(communities_users.user_id) OVER(PARTITION BY communities_users.community_id) / COUNT(users.id) OVER() * 100 AS "%%"
+FROM communities
+  JOIN communities_users
+    ON communities.id = communities_users.community_id
+  JOIN profiles
+    ON communities_users.user_id = profiles.user_id
+  RIGHT JOIN users
+    ON profiles.user_id = users.id;
