@@ -1,0 +1,42 @@
+Создайте таблицу logs типа Archive. Пусть при каждом создании записи в таблицах users, catalogs и products в таблицу logs помещается время и дата создания записи, название таблицы, идентификатор первичного ключа и содержимое поля name.
+
+DROP TABLE IF EXISTS logs;
+CREATE TABLE logs (
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Время создания записи',
+  table_name VARCHAR(255) COMMENT 'Название таблицы',
+  record_id INT UNSIGNED COMMENT 'Идентификатор записи',
+  record_name VARCHAR(255) COMMENT 'Содержимое поля name'
+) COMMENT 'Таблица логов для таблиц users,catalogs,products' ENGINE=Archive;
+
+DELIMITER //
+
+DROP TRIGGER IF EXISTS log_users//
+CREATE TRIGGER log_users BEFORE INSERT ON users
+FOR EACH ROW
+BEGIN
+  INSERT INTO logs
+    (table_name, record_id, record_name)
+  VALUES ('users', NEW.id, NEW.name);
+END//
+
+DROP TRIGGER IF EXISTS log_catalogs//
+CREATE TRIGGER log_catalogs BEFORE INSERT ON catalogs
+FOR EACH ROW
+BEGIN
+  INSERT INTO logs
+    (table_name, record_id, record_name)
+  VALUES ('catalogs', NEW.id, NEW.name);
+END//
+
+DROP TRIGGER IF EXISTS log_products//
+CREATE TRIGGER log_products BEFORE INSERT ON products
+FOR EACH ROW
+BEGIN
+  INSERT INTO logs
+    (table_name, record_id, record_name)
+  VALUES ('products', NEW.id, NEW.name);
+END//
+
+DELIMITER ;
+
+В силу каких-то причин поле record_id заполняется нулями. Не могу выяснить в чём причина.

@@ -1,0 +1,48 @@
+(по желанию) Создайте SQL-запрос, который помещает в таблицу users миллион записей.
+
+DELIMITER //
+
+DROP FUNCTION IF EXISTS return_name//
+CREATE FUNCTION return_name()
+RETURNS VARCHAR(255) NO SQL
+BEGIN
+  SET @name = CONCAT(CHAR(FLOOR(RAND() * 25) + 65),
+                    CHAR(FLOOR(RAND() * 25) + 97),
+                    CHAR(FLOOR(RAND() * 25) + 97),
+                    CHAR(FLOOR(RAND() * 25) + 97),
+                    CHAR(FLOOR(RAND() * 25) + 97));
+  RETURN @name;
+END//
+
+DROP FUNCTION IF EXISTS return_birthday//
+CREATE FUNCTION return_birthday()
+RETURNS VARCHAR(255) NO SQL
+BEGIN
+  SET @birthday = CONCAT('19',
+                         FLOOR(RAND()*10),
+                         FLOOR(RAND()*10),
+                         '-',
+                         FLOOR(RAND()*2),
+                         FLOOR(1+RAND()*2),
+                         '-',
+                         FLOOR(RAND()*3),
+                         FLOOR(1+RAND()*8));
+  RETURN @birthday;
+END//
+
+DROP PROCEDURE IF EXISTS insert_1m//
+CREATE PROCEDURE insert_1m()
+BEGIN
+  SET @i = 1;
+  WHILE @i < 1000000 DO
+    INSERT INTO users (name, birthday_at)
+    VALUES (return_name(), return_birthday());
+    SET @i = @i + 1;
+  END WHILE;
+END//
+
+DELIMITER ;
+
+CALL insert_1m();
+
+Запрос выполняется крайне долго. Я понимаю, что задание на оптимизацию, но в уроке совершенно нет практических приёмов ускорения записи в базу.
